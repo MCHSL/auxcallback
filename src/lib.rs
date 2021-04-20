@@ -60,7 +60,7 @@ pub fn process_all_callbacks(ctx: &DMContext) {
     let stack_trace = Proc::find("/proc/auxtools_stack_trace").unwrap();
     for entry in CALLBACK_CHANNELS.iter() {
         let receiver = entry.value().1.clone();
-        for callback in receiver {
+        for callback in receiver.try_iter() {
             if let Err(e) = callback(ctx) {
                 let _ = stack_trace.call(&[&Value::from_string(e.message.as_str())]);
             }
